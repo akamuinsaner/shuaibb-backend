@@ -1,0 +1,9 @@
+django
+djangorestframework
+pyyaml
+requests
+django-cors-headers
+psycopg
+psycopg-binary
+djangorestframework-simplejwt
+cos-python-sdk-v5
