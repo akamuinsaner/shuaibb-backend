@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+from datetime import datetime
 
 # Create your models here.
 
@@ -55,7 +56,7 @@ class Sample(models.Model):
     costume_offer = models.BooleanField(default=False)
     costume_count = models.IntegerField(default=None)
     custom_costume_count = models.IntegerField(default=0)
-    negative_film_count = models.IntegerField()
+    negative_film_count = models.IntegerField(default=0)
     nega_film_all_offer = models.BooleanField(default=True)
     shooting_time = models.IntegerField(default=None)
     custom_shooting_time = models.IntegerField(default=0)
@@ -63,7 +64,8 @@ class Sample(models.Model):
     shooting_indoor = models.BooleanField(default=True)
     shooting_scene_indoor_count = models.IntegerField(default=0)
     custom_detail = models.TextField()
-
+    created_at = models.DateTimeField(default=datetime.now, editable=False)
+    updated_at = models.DateTimeField(auto_now_add=True, blank=True)
     # extra fields
     public = models.BooleanField(default=True)
     tips = models.TextField()

@@ -10,16 +10,21 @@ from samples.views import (
     sample_template_list_view,
     sample_template_detail_view,
     sample_list_view,
+    sample_batch_delete_view,
+    sample_detail_view
 )
 
 urlpatterns = [
     path('list/', sample_list_view),
     path('create/', sample_create_view),
     path('update/', sample_update_view),
+    path('batch/delete/', sample_batch_delete_view),
+    path('<int:id>/', sample_detail_view),
     path('labels/', sample_label_list_view),
+
     path('draft/retrive/', sample_draft_retrive_view),
     path('templates/', sample_template_list_view),
-    path('templates/detail/', sample_template_detail_view)
+    path('templates/<int:id>/', sample_template_detail_view)
 ]
 
 

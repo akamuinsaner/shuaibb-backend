@@ -26,6 +26,7 @@ from rest_framework.exceptions import (
     ValidationError
 )
 
+
 class SampleDraftRetriveView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -41,6 +42,15 @@ class SampleDraftRetriveView(APIView):
 
 
 sample_draft_retrive_view = SampleDraftRetriveView.as_view()
+
+class SampleDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes=[IsAuthenticated]
+    serializer_class=SampleSerializer
+
+    def get_object(self):
+        return Sample.objects.get(pk=self.kwargs['id'])
+
+sample_detail_view = SampleDetailView.as_view()
 
 
 class SampleCreateView(APIView):
@@ -87,6 +97,8 @@ class SampleListView(APIView):
         order_by = request.data.get('order_by')
         name = request.data.get('name')
         tag_ids = request.data.get('tag_ids')
+        start_date = request.data.get('start_date')
+        end_date = request.data.get('end_date')
         samples = Sample.objects.filter(
             is_draft=False,
             user=request.user,
@@ -97,8 +109,11 @@ class SampleListView(APIView):
             samples = samples.filter(tags__in=tag_ids)
         if (order_by is not None):
             order_by = "-{}".format(order_by) if order == 'desc' else order_by
-            print(order_by)
             samples = samples.order_by(order_by)
+        if (start_date is not None):
+            samples = samples.filter(created_at__gte=start_date)
+        if (end_date is not None):
+            samples = samples.filter(created_at__lte=end_date)
         limitedData = samples[offset * limit: (offset + 1) * limit]
         total = samples.count()
 
@@ -114,9 +129,14 @@ class SampleListView(APIView):
 sample_list_view = SampleListView.as_view()
 
 
+class SampeBatchDeleteView(APIView):
+    permission_classes=[IsAuthenticated]
+    def post(self, request):
+        ids = request.data["ids"]
+        Sample.objects.filter(id__in=ids).delete()
+        return Response(ids, status=HTTP_200_OK)
 
-
-
+sample_batch_delete_view = SampeBatchDeleteView.as_view()
 
 
 
@@ -145,8 +165,7 @@ class SampleTemplateDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = SampleTemplateSerializer
 
     def get_object(self):
-        id = self.request.data["id"]
-        return SampleTemplate.objects.get(pk=id)
+        return SampleTemplate.objects.get(pk=self.kwargs['id'])
 
 sample_template_detail_view = SampleTemplateDetailView.as_view()
 
