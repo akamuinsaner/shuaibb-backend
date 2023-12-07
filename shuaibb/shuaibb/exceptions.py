@@ -9,7 +9,7 @@ def custom_exception_handler(exc, context):
         if (isinstance(response.data, list)):
             format["message"] = response.data[0]
         else:
-            format["message"] = response.data["detail"]
+            format["message"] = response.data.get("detail")
         response.data = format
 
     return response

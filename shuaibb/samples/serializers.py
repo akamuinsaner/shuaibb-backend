@@ -1,11 +1,6 @@
-from dataclasses import field, fields
-from enum import unique
-from importlib.metadata import requires
-from wsgiref.validate import validator
 from rest_framework import serializers
 from users.serializers import UserSerializer
 from users.models import User
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from .models import (
     Sample,
     SampleLabel,

@@ -153,7 +153,8 @@ INSTALLED_APPS += [
     'shuaibb.app.ShuaibbConfig',
     'users',
     'samples',
-    'upload'
+    'upload',
+    'pictures'
 ]
 
 MIDDLEWARE += [

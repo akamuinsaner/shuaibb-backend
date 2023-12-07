@@ -48,7 +48,6 @@ class FileUploadCosView(APIView):
         name, ext = os.path.splitext(file.name)
         name = "{id}{ext}".format(id=str(uuid.uuid4()), ext=ext)
         prefix = 'https://wangshuai-1300661566.cos.ap-beijing.myqcloud.com/'
-        print(name)
         client.put_object(
             Bucket = "wangshuai-1300661566",
             Body=request.data["file"],

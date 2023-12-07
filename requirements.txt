@@ -7,3 +7,5 @@ psycopg
 psycopg-binary
 djangorestframework-simplejwt
 cos-python-sdk-v5
+djangorestframework-recursive
+python-dotenv

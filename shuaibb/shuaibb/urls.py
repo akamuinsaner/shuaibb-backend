@@ -21,10 +21,6 @@ from django.urls import (
     path,
     include
 )
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,8 +32,9 @@ urlpatterns += [
         include([
             path('users/', include("users.urls")),
             path('samples/', include("samples.urls")),
+            path('pictures/', include("pictures.urls")),
             path('upload/', include("upload.urls")),
-            path('static/', include("static.urls"))
+            path('static/', include("static.urls")),
         ])
     )
 ]
