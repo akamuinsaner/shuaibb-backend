@@ -2,6 +2,7 @@ from rest_framework import serializers
 from pictures.models import PictureFolder, FolderUUID, PictureInfo;
 from users.serializers import UserSerializer;
 from rest_framework_recursive.fields import RecursiveField
+from samples.serializers import SampleLabelSerializer
 
 
 class PictureFolderSerializer(serializers.ModelSerializer):
@@ -25,6 +26,7 @@ class PictureInfoSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(required=False, allow_null=True)
     folder = PictureFolderSerializer(many=False, read_only=True)
     folder_id = serializers.IntegerField(required=False, allow_null=True)
+    labels = SampleLabelSerializer(many=True, read_only=True)
     class Meta:
         model = PictureInfo
         fields= '__all__'

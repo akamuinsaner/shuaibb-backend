@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import User
-from datetime import datetime
+from samples.models import SampleLabel
 import uuid
 
 # Create your models here.
@@ -21,8 +21,9 @@ class FolderUUID(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 class PictureInfo(models.Model):
-    name= models.CharField(null=False, blank=False)
-    ext= models.CharField(null=False, blank=False, default='')
+    labels = models.ManyToManyField(SampleLabel, default=[], blank=True, null=True)
+    name= models.CharField(null=False, blank=True)
+    ext= models.CharField(null=False, blank=True, default='')
     uuid_name=models.UUIDField(default=uuid.uuid4, editable=False)
     size=models.BigIntegerField(null=True, blank=True)
     width=models.IntegerField(null=True, blank=True)

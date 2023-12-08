@@ -1,4 +1,5 @@
 from urllib import response
+from xml.dom import ValidationErr
 from rest_framework.response import Response
 from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
@@ -7,7 +8,8 @@ from pictures.serializers import PictureFolderSerializer, FolderUUIDSerializer, 
 from pictures.models import PictureFolder, FolderUUID, PictureInfo
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
-import uuid
+from samples.serializers import SampleLabelSerializer
+from samples.models import SampleLabel
 import os
 from rest_framework.status import (
     HTTP_201_CREATED,
@@ -15,6 +17,26 @@ from rest_framework.status import (
 )
 # Create your views here.
 prefix = 'https://wangshuai-1300661566.cos.ap-beijing.myqcloud.com/'
+
+def upload(file, user_path, uuid_name, ext):
+    config = CosConfig(
+        Region="ap-beijing",
+        SecretId="AKIDGJI9rIj5Xq5CBuc6SoBXrEdxGR5maKyW",
+        SecretKey="Tr7JNOMMMEwbmrrOtTwMo7GNL6d3Nk4K",
+        Token=None,
+        Scheme='https'
+    )
+    client = CosS3Client(config)
+    response = client.put_object(
+        Bucket = "wangshuai-1300661566",
+        Body=file,
+        Key='{space}/{user_path}/{file_name}'.format(
+            space='picture-space',
+            user_path=user_path,
+            file_name='{uuid_name}{ext}'.format(uuid_name=uuid_name, ext=ext)
+        ),
+    )
+    return response
 
 def formatPics(list, folder_uuid): 
     for obj in list:
@@ -189,24 +211,29 @@ class PictureCreateView(CreateAPIView):
     serializer_class = PictureInfoSerializer
 
     def create(self, request, *args, **kwargs):
-        config = CosConfig(
-            Region="ap-beijing",
-            SecretId="AKIDGJI9rIj5Xq5CBuc6SoBXrEdxGR5maKyW",
-            SecretKey="Tr7JNOMMMEwbmrrOtTwMo7GNL6d3Nk4K",
-            Token=None,
-            Scheme='https'
-        )
-        client = CosS3Client(config)
         file = request.data["file"]
         folder_id = request.data.get("folder_id")
         size = request.data.get("size")
         width = request.data.get("width")
         height = request.data.get("height")
+        label_ids = request.data.get("label_ids")
         user_id = getattr(request.user, 'id')
         folder_uuid = FolderUUID.objects.get(user=request.user)
         folder_uuid_serializer = FolderUUIDSerializer(folder_uuid).data
         user_path = folder_uuid_serializer["id"]
-        name, ext = os.path.splitext(file.name)
+        name = request.data.get("name")
+        ext = ''
+        labels = []
+        if (label_ids is not None):
+            labels = SampleLabel.objects.filter(id__in=label_ids.split(','))
+        if (name is None):
+            name, ext = os.path.splitext(file.name)
+        else:
+            name, ext = os.path.splitext(name)
+        same_name_object = PictureInfo.objects.filter(name=name)
+        if (same_name_object.count() > 0):
+            name = '{name}_副本'.format(name=name)
+        
         info_data = {
             'folder_id': folder_id,
             'user_id': user_id,
@@ -214,27 +241,54 @@ class PictureCreateView(CreateAPIView):
             'ext': ext,
             'size': size,
             'width': width,
-            'height': height
+            'height': height,
+            'labels': labels
         }
         serializer = PictureInfoSerializer(data=info_data)
         if (serializer.is_valid()):
-            serializer.save()
-            response = client.put_object(
-                Bucket = "wangshuai-1300661566",
-                Body=request.data["file"],
-                Key='{space}/{user_path}/{file_name}'.format(
-                    space='picture-space',
-                    user_path=user_path,
-                    file_name='{uuid_name}{ext}'.format(uuid_name=serializer.data['uuid_name'], ext=ext)
-                ),
-            )
+            picture_info = serializer.save()
+            picture_info.labels.set(labels)
+            uuid_name = serializer.data['uuid_name']
+            response = upload(file=file, user_path=user_path, uuid_name=uuid_name, ext=ext)
             if (response):
                 return Response(serializer.data, status=HTTP_201_CREATED)
             else:
                 raise Exception('上传失败')
         else:
-            raise serializer.errors
+            raise ValidationErr(serializer.errors)
 
 
 picture_create_view = PictureCreateView.as_view()
+
+
+class PictureCoverView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PictureInfoSerializer
+
+    def create(self, request, *args, **kwargs):
+        id = request.data['id']
+        file = request.data["file"]
+        size = request.data.get("size")
+        label_ids = request.data.get("label_ids")
+        width = request.data.get("width")
+        height = request.data.get("height")
+        folder_uuid = FolderUUID.objects.get(user=request.user)
+        folder_uuid_serializer = FolderUUIDSerializer(folder_uuid).data
+        user_path = folder_uuid_serializer["id"]
+        origin_data = PictureInfo.objects.filter(id=id)
+        labels = []
+        if (label_ids is not None):
+            labels = SampleLabel.objects.filter(id__in=label_ids.split(','))
+        data = PictureInfoSerializer(origin_data.first(), many=False).data
+        origin_data.update(
+            size=size,
+            width=width,
+            height=height,
+        )
+        origin_data.first().labels.set(labels)
+        response= upload(file=file, user_path=user_path, uuid_name=data["uuid_name"], ext=data["ext"])
+        return Response(id, status=HTTP_200_OK)
+
+picture_cover_view = PictureCoverView.as_view()
+
 
