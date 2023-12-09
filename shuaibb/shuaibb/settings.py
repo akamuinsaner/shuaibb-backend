@@ -175,7 +175,7 @@ DATABASES = {
         'NAME': config["DB_NAME"], # database name
         'USER': config["DB_USER"],
         'PASSWORD': config["DB_PWD"],
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5433',
     }
 }
