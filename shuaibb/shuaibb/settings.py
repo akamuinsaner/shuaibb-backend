@@ -38,6 +38,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config["DB_NAME"], # database name
+        'USER': config["DB_USER"],
+        'PASSWORD': config["DB_PWD"],
+        'HOST': 'db',
+        'PORT': '5432',
+    }
+}
+
 
 # Application definition
 
@@ -168,16 +179,7 @@ MIDDLEWARE += [
     "django.middleware.common.CommonMiddleware",
 ]
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config["DB_NAME"], # database name
-        'USER': config["DB_USER"],
-        'PASSWORD': config["DB_PWD"],
-        'HOST': 'db',
-        'PORT': '5432',
-    }
-}
+
 
 #### django-cors-headers start ####
 CORS_ALLOWED_ORIGINS = [
