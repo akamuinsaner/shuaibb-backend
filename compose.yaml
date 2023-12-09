@@ -34,7 +34,7 @@ services:
       - .env
       - .env.${ENV}
     ports:
-      - ${WEB_HOST_PORT}:${WEB_CONTAINER_PORT}
+      - ${WEB_HOST_PORT}:5432
     volumes:
       - /shuaibb/backend:shuaibb
     depends_on:
