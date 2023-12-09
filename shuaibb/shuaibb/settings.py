@@ -176,7 +176,7 @@ DATABASES = {
         'USER': config["DB_USER"],
         'PASSWORD': config["DB_PWD"],
         'HOST': 'db',
-        'PORT': '5432',
+        'PORT': '5433',
     }
 }
 
