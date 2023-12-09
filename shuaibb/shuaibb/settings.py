@@ -11,12 +11,18 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 from corsheaders.defaults import (
     default_headers,
     default_methods
 )
+from dotenv import load_dotenv, dotenv_values
+config = {
+    **dotenv_values(".env"),
+    **os.environ,
+}
 
-
+print(config)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -165,10 +171,10 @@ MIDDLEWARE += [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shuaibb', # database name
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
+        'NAME': config["DB_NAME"], # database name
+        'USER': config["DB_USER"],
+        'PASSWORD': config["DB_PWD"],
+        'HOST': 'db',
         'PORT': '5432',
     }
 }

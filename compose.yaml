@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    build:
+      args:
+        - ENV
+    env_file:
+      - .env
+      - .env.${ENV}
+    volumes:
+      - /shuaibb/db/${ENV}:/var/lib/postgresql/data
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PWD}
+      - POSTGRES_DB=${DB_NAME}
+    # secrets:
+    #   - db_password
+    networks:
+      - shuaibb
+
+  backend:
+    build:
+      context: .
+      args:
+        - ENV
+        - DB_PWD
+        - DB_HOST=db
+        - PORT=${WEB_CONTAINER_PORT}
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+      - .env.${ENV}
+    ports:
+      - ${WEB_HOST_PORT}:${WEB_CONTAINER_PORT}
+    volumes:
+      - /shuaibb/backend:shuaibb
+    depends_on:
+      - db
+    networks:
+      - shuaibb
+
+
+
+# secrets:
+#    db_password:
+#       external: true
+#       name: "${db_password}"
+
+networks:
+  shuaibb:
+    external: false
+    name: dock-db-test
+
