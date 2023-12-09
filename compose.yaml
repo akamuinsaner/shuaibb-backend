@@ -39,6 +39,8 @@ services:
       - /shuaibb/backend:shuaibb
     depends_on:
       - db
+    links:
+      - db:db
     networks:
       - shuaibb
 
