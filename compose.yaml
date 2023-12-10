@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   db:
-    image: postgres
+    image: postgres:16-alpine
     restart: always
     build:
       args:
@@ -10,17 +10,19 @@ services:
       - .env
       - .env.${ENV}
     volumes:
-      - /shuaibb/db/${ENV}:/var/lib/postgresql/data
+      - /shuaibb/db/${ENV}:/tmp/pgdata
     ports:
       - ${DB_PORT}:${DB_PORT}
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PWD}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=postgre
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - PGDATA=/tmp/pgdata
     # secrets:
     #   - db_password
-    networks:
-      - shuaibb
+    # networks:
+    #   - shuaibb
 
   backend:
     build:
@@ -35,15 +37,15 @@ services:
       - .env
       - .env.${ENV}
     ports:
-      - ${WEB_HOST_PORT}:5432
+      - 5433:5432
     volumes:
-      - /shuaibb/backend:shuaibb
+      - /shuaibb/backend:/shuaibb
     depends_on:
       - db
-    links:
-      - db:db
-    networks:
-      - shuaibb
+    # links:
+    #   - db:db
+    # networks:
+    #   - shuaibb
 
 
 
@@ -52,6 +54,7 @@ services:
 #       external: true
 #       name: "${db_password}"
 
-networks:
-  shuaibb:
+# networks:
+#   shuaibb:
+#     driver: bridge
 
