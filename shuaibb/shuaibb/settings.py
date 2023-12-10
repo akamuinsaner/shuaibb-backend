@@ -24,10 +24,10 @@ config = {
     **dotenv_values(".env")
 }
 
-env = config.get('env', 'dev') 
+env = config.get('ENV', 'dev') 
 
-if (os.getenv('env') is not None):
-    env = os.getenv('env')
+if (os.getenv('ENV') is not None):
+    env = os.getenv('ENV')
 
 
 is_test_or_prod = (env == 'test' or env == 'prod')
