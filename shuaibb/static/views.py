@@ -9,6 +9,7 @@ from rest_framework.status import (
 # Create your views here.
 
 class LanguageView(APIView):
+    permission_classes = []
     def get(self, request):
         f = Path(__file__).resolve().parent / 'resources/i18n.json'
         content = f.read_text()

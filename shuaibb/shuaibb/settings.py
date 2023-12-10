@@ -17,12 +17,26 @@ from corsheaders.defaults import (
     default_methods
 )
 from dotenv import load_dotenv, dotenv_values
+
+
+
 config = {
-    **dotenv_values(".env"),
-    **os.environ,
+    **dotenv_values(".env")
 }
 
-print(config)
+env = config.get('env', 'dev') 
+
+if (os.getenv('env') is not None):
+    env = os.getenv('env')
+
+
+is_test_or_prod = (env == 'test' or env == 'prod')
+
+config = {
+    **config,
+    **dotenv_values(".env.{override}".format(override=env))
+}
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -34,9 +48,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(c9xbj48h(dbzrmqz9bw4s5v(5$x5pu50#icd5&=2dimrp)r^#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if is_test_or_prod == True else True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -80,17 +94,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'shuaibb.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
@@ -172,11 +175,11 @@ MIDDLEWARE += [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgre', # database name
-        'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': 'db',
-        'PORT': '5433',
+        'NAME': config.get('DB_NAME', 'shuaibb_dev'), # database name
+        'USER': config.get("DB_USER", 'wangshuai'),
+        'PASSWORD': config.get("DB_PWD", 123456),
+        'HOST': config.get("DB_HOST", '101.42.247.31'),
+        'PORT': config.get("DB_PORT", 5432),
     }
 }
 

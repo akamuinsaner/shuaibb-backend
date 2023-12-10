@@ -21,7 +21,7 @@ class FolderUUID(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 class PictureInfo(models.Model):
-    labels = models.ManyToManyField(SampleLabel, default=[], blank=True, null=True)
+    labels = models.ManyToManyField(SampleLabel, default=[], blank=True)
     name= models.CharField(null=False, blank=True)
     ext= models.CharField(null=False, blank=True, default='')
     uuid_name=models.UUIDField(default=uuid.uuid4, editable=False)
