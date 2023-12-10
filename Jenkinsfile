@@ -61,8 +61,10 @@ pipeline {
             steps {
                 script {
                     def CONTAINER_ID = sh(script: "docker ps -a | grep -0e ${env.PROJECT_NAME}/${env.JOB_NAME}-${env.PROFILE} | cut -c1-10", returnStdout: true).trim();
+                    if (CONTAINER_ID) {
+                        sh "docker rm -f ${CONTAINER_ID}"
+                    }
                     sh """
-                        docker rm -f ${CONTAINER_ID}
                         docker run -d -p ${env.OPEN_PORT}:${env.EXPOSE_PORT} ${env.PROJECT_NAME}/${env.JOB_NAME}-${env.PROFILE}:${env.BUILD_ID}
                     """
                 }
