@@ -224,9 +224,10 @@ class PictureCreateView(CreateAPIView):
         name = request.data.get("name")
         ext = ''
         labels = []
-        if (label_ids is not None):
+        if (label_ids is not None and label_ids is not ''):
             labels = SampleLabel.objects.filter(id__in=label_ids.split(','))
         if (name is None):
+            print(name)
             name, ext = os.path.splitext(file.name)
         else:
             name, ext = os.path.splitext(name)
