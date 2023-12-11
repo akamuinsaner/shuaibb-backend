@@ -2,9 +2,14 @@ from .models import PictureInfo
 from django.db.models import Sum
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
+from dotenv import dotenv_values
+
+config = {
+    **dotenv_values(".env.txcloud")
+}
 
 class Helpers():
-    prefix = 'https://wangshuai-1300661566.cos.ap-beijing.myqcloud.com/'
+    prefix = 'https://{Bucket}.cos.{Region}.myqcloud.com/'.format(Bucket=config.get('Bucket'), Region=config.get('Region'))
     @staticmethod 
     def size_check(user, size):
         total_size = PictureInfo.objects.filter(user=user).aggregate(Sum("size"))
@@ -27,16 +32,13 @@ class Helpers():
 
     @staticmethod
     def upload(file, user_path, uuid_name, ext):
+        Bucket = config.pop("Bucket")
         config = CosConfig(
-            Region="ap-beijing",
-            SecretId="AKIDGJI9rIj5Xq5CBuc6SoBXrEdxGR5maKyW",
-            SecretKey="Tr7JNOMMMEwbmrrOtTwMo7GNL6d3Nk4K",
-            Token=None,
-            Scheme='https'
+            **config,
         )
         client = CosS3Client(config)
         response = client.put_object(
-            Bucket = "wangshuai-1300661566",
+            Bucket = Bucket,
             Body=file,
             Key='{space}/{user_path}/{file_name}'.format(
                 space='picture-space',
