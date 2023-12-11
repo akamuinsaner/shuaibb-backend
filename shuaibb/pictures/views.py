@@ -184,6 +184,7 @@ class PictureCreateView(CreateAPIView):
     serializer_class = PictureInfoSerializer
 
     def create(self, request, *args, **kwargs):
+        print('start')
         try:
             size = request.data.get("size")
             Helpers.size_check(request.user, size)
@@ -199,6 +200,7 @@ class PictureCreateView(CreateAPIView):
             name = request.data.get("name")
             ext = ''
             labels = []
+            print('1')
             if (label_ids != None and label_ids != ''):
                 labels = SampleLabel.objects.filter(id__in=label_ids.split(','))
             if (name is None):
@@ -209,7 +211,7 @@ class PictureCreateView(CreateAPIView):
             same_name_object = PictureInfo.objects.filter(name=name)
             if (same_name_object.count() > 0):
                 name = '{name}_副本'.format(name=name)
-            
+            print('2')
             info_data = {
                 'folder_id': folder_id,
                 'user_id': user_id,
@@ -222,9 +224,10 @@ class PictureCreateView(CreateAPIView):
             }
         except Exception:
             raise Exception
-
+        print('3')
         serializer = PictureInfoSerializer(data=info_data)
         if (serializer.is_valid()):
+            print('4')
             picture_info = serializer.save()
             picture_info.labels.set(labels)
             uuid_name = serializer.data['uuid_name']
