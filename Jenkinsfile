@@ -64,7 +64,7 @@ pipeline {
                     if (CONTAINER_ID) {
                         sh "docker rm -f ${CONTAINER_ID}"
                     }
-                    sh "docker run -d -rm -p ${env.OPEN_PORT}:${env.EXPOSE_PORT}  --name ${env.JOB_NAME}-${env.PROFILE} ${env.PROJECT_NAME}/${env.JOB_NAME}-${env.PROFILE}:${env.BUILD_ID}"
+                    sh "docker run -d --rm -p ${env.OPEN_PORT}:${env.EXPOSE_PORT}  --name ${env.JOB_NAME}-${env.PROFILE} ${env.PROJECT_NAME}/${env.JOB_NAME}-${env.PROFILE}:${env.BUILD_ID}"
                 }
             }
         }
