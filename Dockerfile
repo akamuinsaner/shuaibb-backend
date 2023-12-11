@@ -6,6 +6,7 @@ ARG WORKDIR="/web"
 ARG MANAGEFILE="${WORKDIR}/shuaibb/manage.py"
 
 COPY . ${WORKDIR}
+COPY /home/lighthouse/secret/.env.txcloud ${WORKDIR}
 
 WORKDIR ${WORKDIR}
 
