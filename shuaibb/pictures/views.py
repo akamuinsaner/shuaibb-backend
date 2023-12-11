@@ -1,53 +1,19 @@
-from urllib import response
 from xml.dom import ValidationErr
 from rest_framework.response import Response
-from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from pictures.serializers import PictureFolderSerializer, FolderUUIDSerializer, PictureInfoSerializer
 from pictures.models import PictureFolder, FolderUUID, PictureInfo
-from qcloud_cos import CosConfig
-from qcloud_cos import CosS3Client
-from samples.serializers import SampleLabelSerializer
+from django.db.models import Sum
+from rest_framework.views import APIView
 from samples.models import SampleLabel
+from .helpers import Helpers
 import os
 from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_200_OK
 )
-# Create your views here.
-prefix = 'https://wangshuai-1300661566.cos.ap-beijing.myqcloud.com/'
-
-def upload(file, user_path, uuid_name, ext):
-    config = CosConfig(
-        Region="ap-beijing",
-        SecretId="AKIDGJI9rIj5Xq5CBuc6SoBXrEdxGR5maKyW",
-        SecretKey="Tr7JNOMMMEwbmrrOtTwMo7GNL6d3Nk4K",
-        Token=None,
-        Scheme='https'
-    )
-    client = CosS3Client(config)
-    response = client.put_object(
-        Bucket = "wangshuai-1300661566",
-        Body=file,
-        Key='{space}/{user_path}/{file_name}'.format(
-            space='picture-space',
-            user_path=user_path,
-            file_name='{uuid_name}{ext}'.format(uuid_name=uuid_name, ext=ext)
-        ),
-    )
-    return response
-
-def formatPics(list, folder_uuid): 
-    for obj in list:
-        obj['url'] = '{prefix}{space}/{user_path}/{uuid_name}{ext}'.format(
-        prefix=prefix,
-        space='picture-space',
-        user_path=getattr(folder_uuid, 'id'),
-        uuid_name=obj['uuid_name'],
-        ext=obj['ext']
-    )
-    return list
+# Create your views here
 
 class PictureFolderListView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -68,9 +34,6 @@ class PictureFolderListView(ListCreateAPIView):
             folder.parent = parent
 
 picture_folder_list_view = PictureFolderListView.as_view()
-
-
-
 
 
 
@@ -110,7 +73,7 @@ class PictureListView(CreateAPIView):
         folder_id = request.data.get("folder_id")
         pictures = queryset.filter(folder_id=folder_id)
         data = PictureInfoSerializer(pictures, many=True).data
-        return Response(formatPics(data, folder_uuid), status=HTTP_200_OK)
+        return Response(Helpers.formatPics(data, folder_uuid), status=HTTP_200_OK)
 
 picture_list_view = PictureListView.as_view()
 
@@ -127,6 +90,16 @@ class PictureInfoDetailView(RetrieveUpdateDestroyAPIView):
         return PictureInfo.objects.get(pk=self.kwargs['id'])
 
 picture_info_detail_view = PictureInfoDetailView.as_view()
+
+
+class PictureTotalSizeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        total_size = PictureInfo.objects.filter(user=request.user).aggregate(Sum("size"))
+        return Response(total_size["size__sum"], status=HTTP_200_OK)
+
+picture_total_size_view = PictureTotalSizeView.as_view()
 
 
 
@@ -153,7 +126,7 @@ class PictureAndFolderSearchView(CreateAPIView):
             pictures = pictures.filter(updated_at__lte=end_date)
         response = {
             'folders': PictureFolderSerializer(folders, many=True).data,
-            'pictures': formatPics(PictureInfoSerializer(pictures, many=True).data, folder_uuid)
+            'pictures': Helpers.formatPics(PictureInfoSerializer(pictures, many=True).data, folder_uuid)
         }
         return Response(response, status=HTTP_200_OK)
 
@@ -211,9 +184,10 @@ class PictureCreateView(CreateAPIView):
     serializer_class = PictureInfoSerializer
 
     def create(self, request, *args, **kwargs):
+        size = request.data.get("size")
+        Helpers.size_check(request.user, size)
         file = request.data["file"]
         folder_id = request.data.get("folder_id")
-        size = request.data.get("size")
         width = request.data.get("width")
         height = request.data.get("height")
         label_ids = request.data.get("label_ids")
@@ -250,7 +224,7 @@ class PictureCreateView(CreateAPIView):
             picture_info = serializer.save()
             picture_info.labels.set(labels)
             uuid_name = serializer.data['uuid_name']
-            response = upload(file=file, user_path=user_path, uuid_name=uuid_name, ext=ext)
+            response = Helpers.upload(file=file, user_path=user_path, uuid_name=uuid_name, ext=ext)
             if (response):
                 return Response(serializer.data, status=HTTP_201_CREATED)
             else:
@@ -270,6 +244,7 @@ class PictureCoverView(CreateAPIView):
         id = request.data['id']
         file = request.data["file"]
         size = request.data.get("size")
+        Helpers.size_check(request.user, size)
         label_ids = request.data.get("label_ids")
         width = request.data.get("width")
         height = request.data.get("height")
@@ -287,7 +262,7 @@ class PictureCoverView(CreateAPIView):
             height=height,
         )
         origin_data.first().labels.set(labels)
-        response= upload(file=file, user_path=user_path, uuid_name=data["uuid_name"], ext=data["ext"])
+        response= Helpers.upload(file=file, user_path=user_path, uuid_name=data["uuid_name"], ext=data["ext"])
         return Response(id, status=HTTP_200_OK)
 
 picture_cover_view = PictureCoverView.as_view()

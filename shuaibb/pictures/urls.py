@@ -11,7 +11,8 @@ from .views import (
     picture_and_folder_search_view,
     picture_and_folder_batch_delete_view,
     picture_and_folder_batch_move_view,
-    picture_cover_view
+    picture_cover_view,
+    picture_total_size_view
 )
 
 urlpatterns = [
@@ -24,8 +25,7 @@ urlpatterns = [
     path('cover/', picture_cover_view),
     path('create/', picture_create_view),
     path('<int:id>/', picture_info_detail_view),
-
-
+    path('size/', picture_total_size_view)
 ]
 
 
