@@ -8,9 +8,9 @@ class Helpers():
     @staticmethod 
     def size_check(user, size):
         total_size = PictureInfo.objects.filter(user=user).aggregate(Sum("size"))
-        if (total_size["size__sum"] + int(size) > 2 * 1024 * 1024):
+        if (total_size["size__sum"] != None and (total_size["size__sum"] + int(size) > 2 * 1024 * 1024)):
             raise Exception('size exceed')
-
+            
 
     @staticmethod 
     def formatPics(list, folder_uuid): 

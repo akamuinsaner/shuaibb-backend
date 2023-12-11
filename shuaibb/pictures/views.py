@@ -184,35 +184,30 @@ class PictureCreateView(CreateAPIView):
     serializer_class = PictureInfoSerializer
 
     def create(self, request, *args, **kwargs):
-        print('start')
-        try:
-            size = request.data.get("size")
-            Helpers.size_check(request.user, size)
-            file = request.data["file"]
-            folder_id = request.data.get("folder_id")
-            width = request.data.get("width")
-            height = request.data.get("height")
-            label_ids = request.data.get("label_ids")
-            user_id = getattr(request.user, 'id')
-            folder_uuid = FolderUUID.objects.get(user=request.user)
-            folder_uuid_serializer = FolderUUIDSerializer(folder_uuid).data
-            user_path = folder_uuid_serializer["id"]
-            name = request.data.get("name")
-            ext = ''
-            labels = []
-            print('1')
-            if (label_ids != None and label_ids != ''):
-                labels = SampleLabel.objects.filter(id__in=label_ids.split(','))
-            if (name is None):
-                print(name)
-                name, ext = os.path.splitext(file.name)
-            else:
-                name, ext = os.path.splitext(name)
-            same_name_object = PictureInfo.objects.filter(name=name)
-            if (same_name_object.count() > 0):
-                name = '{name}_副本'.format(name=name)
-            print('2')
-            info_data = {
+        size = request.data.get("size")
+        Helpers.size_check(request.user, size)
+        file = request.data["file"]
+        folder_id = request.data.get("folder_id")
+        width = request.data.get("width")
+        height = request.data.get("height")
+        label_ids = request.data.get("label_ids")
+        user_id = getattr(request.user, 'id')
+        folder_uuid = FolderUUID.objects.get(user=request.user)
+        folder_uuid_serializer = FolderUUIDSerializer(folder_uuid).data
+        user_path = folder_uuid_serializer["id"]
+        name = request.data.get("name")
+        ext = ''
+        labels = []
+        if (label_ids != None and label_ids != ''):
+            labels = SampleLabel.objects.filter(id__in=label_ids.split(','))
+        if (name is None):
+            name, ext = os.path.splitext(file.name)
+        else:
+            name, ext = os.path.splitext(name)
+        same_name_object = PictureInfo.objects.filter(name=name)
+        if (same_name_object.count() > 0):
+            name = '{name}_副本'.format(name=name)
+        info_data = {
                 'folder_id': folder_id,
                 'user_id': user_id,
                 'name': name,
@@ -221,13 +216,9 @@ class PictureCreateView(CreateAPIView):
                 'width': width,
                 'height': height,
                 'labels': labels
-            }
-        except Exception:
-            raise Exception
-        print('3')
+        }
         serializer = PictureInfoSerializer(data=info_data)
         if (serializer.is_valid()):
-            print('4')
             picture_info = serializer.save()
             picture_info.labels.set(labels)
             uuid_name = serializer.data['uuid_name']
