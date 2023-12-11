@@ -1,4 +1,3 @@
-from xml.dom import ValidationErr
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -8,6 +7,7 @@ from django.db.models import Sum
 from rest_framework.views import APIView
 from samples.models import SampleLabel
 from .helpers import Helpers
+from rest_framework.exceptions import ValidationError
 import os
 from rest_framework.status import (
     HTTP_201_CREATED,
@@ -230,7 +230,7 @@ class PictureCreateView(CreateAPIView):
             else:
                 raise Exception('上传失败')
         else:
-            raise ValidationErr(serializer.errors)
+            raise ValidationError(serializer.errors)
 
 
 picture_create_view = PictureCreateView.as_view()
