@@ -187,11 +187,11 @@ DATABASES = {
 #### django-cors-headers start ####
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://101.42.247.31:9000/"
+
 ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
-
+    r"^http[s]://101.42.247.31:(\d+)$"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False
