@@ -29,11 +29,11 @@ pipeline {
 
        stage('COPY SECRETS') {
            steps {
-                withCredentials([file(credentialsId: "shuaibb.env.$PROFILE", variable: 'COSCONFIG')]) {
+                withCredentials([file(credentialsId: "shuaibb.env.$PROFILE", variable: 'ENVFile')]) {
                     // do something with the file, for instance 
                     sh """
-                        cat $COSCONFIG
-                        cp $COSCONFIG ./.env.$PROFILE
+                        cat $ENVFile
+                        cp $ENVFile ./.env.$PROFILE
                     """ 
                 }
            }
