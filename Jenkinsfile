@@ -29,11 +29,13 @@ pipeline {
 
        stage('COPY SECRETS') {
            steps {
-               def pwd = sh(script: "pwd", returnStdout: true).trim()
-               sh """
-                    echo ${pwd}
-                    cp /home/lighthouse/secret/.env.txcloud ${pwd}
-               """
+               script {
+                    def pwd = sh(script: "pwd", returnStdout: true).trim()
+                    sh """
+                            echo ${pwd}
+                            cp /home/lighthouse/secret/.env.txcloud ${pwd}
+                    """
+               }
            }
        }
 
