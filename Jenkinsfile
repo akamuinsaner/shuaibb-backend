@@ -33,7 +33,7 @@ pipeline {
                     // do something with the file, for instance 
                     sh """
                         cat $COSCONFIG
-                        cy $COSCONFIG .
+                        cy $COSCONFIG ./.env.txcloud
                     """ 
                 }
            }
