@@ -214,13 +214,6 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 
 DEFAULT_FILE_STORAGE = "tencentcos_storage.TencentCOSStorage"
-
-BUCKET_BANE = "wangshuai-1300661566"
-COS_CONFIG = {
-    "Region": "ap-beijing",
-    "SecretId": "AKIDGJI9rIj5Xq5CBuc6SoBXrEdxGR5maKyW",
-    "SecretKey": "Tr7JNOMMMEwbmrrOtTwMo7GNL6d3Nk4K",
-}
 ############ upload end ##############
 
 AUTHENTICATION_BACKENDS = (
