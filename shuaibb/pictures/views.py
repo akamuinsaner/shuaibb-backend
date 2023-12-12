@@ -24,7 +24,6 @@ class PictureFolderListView(ListCreateAPIView):
         return folders
 
     def perform_create(self, serializer):
-        name = self.request.data.get('name')
         parent_id = self.request.data.get('parent_id')
         parent = None
         folder = serializer.save()
@@ -43,7 +42,6 @@ class PictureFolderDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = PictureFolderSerializer
 
     def get_object(self):
-        print(self.kwargs['id'])
         return PictureFolder.objects.get(pk=self.kwargs['id'])
 
 picture_folder_detail_view = PictureFolderDetailView.as_view()
@@ -143,14 +141,11 @@ class PictureAndFolderBatchDeleteView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         folder_ids = request.data.get("folder_ids")
         picture_ids = request.data.get("picture_ids")
-        print(folder_ids, picture_ids)
         if (folder_ids is not None):
             folders = PictureFolder.objects.filter(id__in=folder_ids)
-            print(folders)
             folders.delete()
         if (picture_ids is not None):
             pictures = PictureInfo.objects.filter(id__in=picture_ids)
-            print(pictures)
             pictures.delete()
         return Response(None, status=HTTP_200_OK)
 
@@ -215,7 +210,8 @@ class PictureCreateView(CreateAPIView):
                 'size': size,
                 'width': width,
                 'height': height,
-                'labels': labels
+                'labels': labels,
+                'file': file
         }
         serializer = PictureInfoSerializer(data=info_data)
         if (serializer.is_valid()):
@@ -260,7 +256,7 @@ class PictureCoverView(CreateAPIView):
             height=height,
         )
         origin_data.first().labels.set(labels)
-        response= Helpers.upload(file=file, user_path=user_path, uuid_name=data["uuid_name"], ext=data["ext"])
+        Helpers.upload(file=file, user_path=user_path, uuid_name=data["uuid_name"], ext=data["ext"])
         return Response(id, status=HTTP_200_OK)
 
 picture_cover_view = PictureCoverView.as_view()
