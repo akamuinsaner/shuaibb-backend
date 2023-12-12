@@ -27,11 +27,15 @@ pipeline {
     //         }
     //     }
 
-    //    stage('Mvn package') {
-    //        steps {
-    //            sh "mvn clean package -DskipTests -P${env.PROFILE}"
-    //        }
-    //    }
+       stage('COPY SECRETS') {
+           steps {
+               def pwd = sh(script: "pwd", returnStdout: true).trim()
+               sh """
+                    echo ${pwd}
+                    cp /home/lighthouse/secret/.env.txcloud ${pwd}
+               """
+           }
+       }
 
         stage('Docker build') {
             steps {
