@@ -29,11 +29,11 @@ pipeline {
 
        stage('COPY SECRETS') {
            steps {
-                withCredentials([file(credentialsId: 'tx-cloud-cos-secret-test', variable: 'COSCONFIG')]) {
+                withCredentials([file(credentialsId: "shuaibb.env.$PROFILE", variable: 'COSCONFIG')]) {
                     // do something with the file, for instance 
                     sh """
                         cat $COSCONFIG
-                        cp $COSCONFIG ./.env.txcloud
+                        cp $COSCONFIG ./.env.$PROFILE
                     """ 
                 }
            }

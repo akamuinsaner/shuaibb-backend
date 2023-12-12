@@ -2,12 +2,12 @@ from sys import prefix
 from .models import PictureInfo
 from django.db.models import Sum
 from dotenv import dotenv_values
-from shuaibb.settings import ENV_BASE_DIR
+from shuaibb.settings import ENV_CONFIG
 from utils.funcTools import upload_to_cos
 
 
+
 class Helpers():
-    config = {**dotenv_values(ENV_BASE_DIR / ".env.txcloud")}
     @staticmethod 
     def size_check(user, size):
         total_size = PictureInfo.objects.filter(user=user).aggregate(Sum("size"))
@@ -20,8 +20,8 @@ class Helpers():
         for obj in list:
             obj['url'] = '{prefix}{space}/{user_path}/{uuid_name}{ext}'.format(
             prefix='https://{Bucket}.cos.{Region}.myqcloud.com/'.format(
-                Bucket=Helpers.config.get('Bucket'),
-                Region=Helpers.config.get('Region'),
+                Bucket=ENV_CONFIG.get('Bucket'),
+                Region=ENV_CONFIG.get('Region'),
             ),
             space='picture-space',
             user_path=getattr(folder_uuid, 'id'),

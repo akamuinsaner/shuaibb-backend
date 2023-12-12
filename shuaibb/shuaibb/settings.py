@@ -20,11 +20,11 @@ from dotenv import load_dotenv, dotenv_values
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_BASE_DIR = Path(BASE_DIR.parent)
-config = {
+ENV_CONFIG = {
     **dotenv_values(ENV_BASE_DIR / '.env')
 }
 
-env = config.get('ENV', 'dev') 
+env = ENV_CONFIG.get('ENV', 'dev') 
 
 if (os.getenv('ENV') is not None):
     env = os.getenv('ENV')
@@ -32,8 +32,8 @@ if (os.getenv('ENV') is not None):
 
 is_test_or_prod = (env == 'test' or env == 'prod')
 
-config = {
-    **config,
+ENV_CONFIG = {
+    **ENV_CONFIG,
     **dotenv_values(ENV_BASE_DIR / ".env.{override}".format(override=env))
 }
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -46,7 +46,7 @@ config = {
 SECRET_KEY = 'django-insecure-(c9xbj48h(dbzrmqz9bw4s5v(5$x5pu50#icd5&=2dimrp)r^#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if is_test_or_prod == True else False
+DEBUG = False if is_test_or_prod == True else True
 
 ALLOWED_HOSTS = ['*']
 
@@ -173,11 +173,11 @@ MIDDLEWARE += [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config.get('DB_NAME', 'shuaibb_dev'), # database name
-        'USER': config.get("DB_USER", 'wangshuai'),
-        'PASSWORD': config.get("DB_PWD", 123456),
-        'HOST': config.get("DB_HOST", '101.42.247.31'),
-        'PORT': config.get("DB_PORT", 5432),
+        'NAME': ENV_CONFIG.get('DB_NAME'), # database name
+        'USER': ENV_CONFIG.get("DB_USER"),
+        'PASSWORD': ENV_CONFIG.get("DB_PWD"),
+        'HOST': ENV_CONFIG.get("DB_HOST"),
+        'PORT': ENV_CONFIG.get("DB_PORT"),
     }
 }
 
