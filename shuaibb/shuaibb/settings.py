@@ -18,10 +18,10 @@ from corsheaders.defaults import (
 )
 from dotenv import load_dotenv, dotenv_values
 
-
-
+BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_BASE_DIR = Path(BASE_DIR.parent)
 config = {
-    **dotenv_values(".env")
+    **dotenv_values(ENV_BASE_DIR / '.env')
 }
 
 env = config.get('ENV', 'dev') 
@@ -34,11 +34,9 @@ is_test_or_prod = (env == 'test' or env == 'prod')
 
 config = {
     **config,
-    **dotenv_values(".env.{override}".format(override=env))
+    **dotenv_values(ENV_BASE_DIR / ".env.{override}".format(override=env))
 }
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production

@@ -1,15 +1,14 @@
+from sys import prefix
 from .models import PictureInfo
 from django.db.models import Sum
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
 from dotenv import dotenv_values
+from shuaibb.settings import ENV_BASE_DIR
 
-config = {
-    **dotenv_values(".env.txcloud")
-}
 
 class Helpers():
-    prefix = 'https://{Bucket}.cos.{Region}.myqcloud.com/'.format(Bucket=config.get('Bucket'), Region=config.get('Region'))
+    config = {**dotenv_values(ENV_BASE_DIR / ".env.txcloud")}
     @staticmethod 
     def size_check(user, size):
         total_size = PictureInfo.objects.filter(user=user).aggregate(Sum("size"))
@@ -19,6 +18,7 @@ class Helpers():
 
     @staticmethod 
     def formatPics(list, folder_uuid): 
+        print(dotenv_values(".env.txcloud"))
         for obj in list:
             obj['url'] = '{prefix}{space}/{user_path}/{uuid_name}{ext}'.format(
             prefix=Helpers.prefix,
@@ -32,9 +32,14 @@ class Helpers():
 
     @staticmethod
     def upload(file, user_path, uuid_name, ext):
-        Bucket = config.pop("Bucket")
+        Bucket = Helpers.config["Bucket"]
+        print(Helpers.config)
         config = CosConfig(
-            **config,
+            Region=Helpers.config["Region"],
+            SecretId=Helpers.config["SecretId"],
+            SecretKey=Helpers.config["SecretKey"],
+            Token=Helpers.config["Token"],
+            Scheme=Helpers.config["Scheme"]
         )
         client = CosS3Client(config)
         response = client.put_object(
@@ -46,4 +51,10 @@ class Helpers():
                 file_name='{uuid_name}{ext}'.format(uuid_name=uuid_name, ext=ext)
             ),
         )
+        print(response)
         return response
+
+Helpers.prefix = 'https://{Bucket}.cos.{Region}.myqcloud.com/'.format(
+    Bucket=Helpers.config.get('Bucket'),
+    Region=Helpers.config.get('Region'),
+)
