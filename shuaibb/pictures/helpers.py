@@ -17,7 +17,6 @@ class Helpers():
 
     @staticmethod 
     def formatPics(list, folder_uuid): 
-        print(dotenv_values(".env.txcloud"))
         for obj in list:
             obj['url'] = '{prefix}{space}/{user_path}/{uuid_name}{ext}'.format(
             prefix='https://{Bucket}.cos.{Region}.myqcloud.com/'.format(

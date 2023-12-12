@@ -29,13 +29,13 @@ pipeline {
 
        stage('COPY SECRETS') {
            steps {
-               script {
-                    def pwd = sh(script: "pwd", returnStdout: true).trim()
+                withCredentials([file(credentialsId: 'tx-cloud-cos-secret-test', variable: 'COSCONFIG')]) {
+                    // do something with the file, for instance 
                     sh """
-                            echo ${pwd}
-                            cp /home/lighthouse/secret/.env.txcloud ${pwd}
-                    """
-               }
+                        cat $COSCONFIG
+                        cy $COSCONFIG .
+                    """ 
+                }
            }
        }
 
