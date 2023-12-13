@@ -46,7 +46,7 @@ ENV_CONFIG = {
 SECRET_KEY = 'django-insecure-(c9xbj48h(dbzrmqz9bw4s5v(5$x5pu50#icd5&=2dimrp)r^#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if is_test_or_prod == True else True
+DEBUG = True if is_test_or_prod == True else True
 
 ALLOWED_HOSTS = ['*']
 
@@ -138,6 +138,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
+
+ATOMIC_REQUESTS =True
+
 REST_FRAMEWORK = {
     # authentication
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -161,7 +164,9 @@ INSTALLED_APPS += [
     'users',
     'samples',
     'upload',
-    'pictures'
+    'pictures',
+    'schedules',
+    'customers'
 ]
 
 MIDDLEWARE += [

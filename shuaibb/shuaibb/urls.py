@@ -33,6 +33,8 @@ urlpatterns += [
             path('users/', include("users.urls")),
             path('samples/', include("samples.urls")),
             path('pictures/', include("pictures.urls")),
+            path('customers/', include("customers.urls")),
+            path('schedules/', include("schedules.urls")),
             path('upload/', include("upload.urls")),
             path('static/', include("static.urls")),
         ])
