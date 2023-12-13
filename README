@@ -1,2 +1,6 @@
 /var/lib/pgsql/15/data/pg_hba.conf
 
+## 下载代码后，在当前目录下运行
+```
+mkdir -p ./temp/db
+```

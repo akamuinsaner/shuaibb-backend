@@ -1,0 +1,23 @@
+version: "3.5"
+
+services:
+  postgresql:
+    image: "postgres:15-alpine"
+    environment:
+      PGDATA: /var/lib/postgres/data/pgdata
+      POSTGRES_DB: shuaibb_dev
+      POSTGRES_USER: wangshuai
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - ./temp/db:/var/lib/postgres/data/pgdata
+    ports:
+      - "5432:5432"
+  web:
+    build: shuaibb
+#    command: python /web/shuaibb/manage.py runserver 8000
+    volumes:
+      - ./:/web
+    depends_on:
+      - postgresql
+    ports:
+      - "8000:8000"
