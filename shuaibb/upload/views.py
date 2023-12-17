@@ -35,13 +35,16 @@ class FileUploadCosView(APIView):
     
     def post(self, request):
         file = request.data["file"]
+        type = request.data["type"]
+        type = request.data["type"] if request.data["type"] != None else 'common'
         name, ext = os.path.splitext(file.name)
-        name = "{id}{ext}".format(id=str(uuid.uuid4()), ext=ext)
+        name = "{type}/{id}{ext}".format(id=str(uuid.uuid4()), ext=ext, type=type)
         prefix='https://{Bucket}.cos.{Region}.myqcloud.com/'.format(
             Bucket=ENV_CONFIG.get('Bucket'),
             Region=ENV_CONFIG.get('Region'),
-        ),
+        )
         upload_to_cos(file, name)
+        print(prefix, name)
         response = {}
         response["url"] = '{prefix}{name}'.format(prefix=prefix, name=name)
         return Response(response, status=status.HTTP_201_CREATED)

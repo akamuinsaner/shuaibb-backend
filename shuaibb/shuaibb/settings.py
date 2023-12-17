@@ -166,7 +166,8 @@ INSTALLED_APPS += [
     'upload',
     'pictures',
     'schedules',
-    'customers'
+    'customers',
+    'auths'
 ]
 
 MIDDLEWARE += [

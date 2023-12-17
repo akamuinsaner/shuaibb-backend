@@ -3,6 +3,7 @@ from users.models import User
 from samples.models import Sample
 from rest_framework.exceptions import ValidationError
 from customers.models import Customer
+from datetime import datetime, timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -24,7 +25,8 @@ class Schedule(models.Model):
     pay_status=models.IntegerField(choices=PAYSTATUS, default=0)
     location=models.CharField(null=True, blank=True)
     user=models.ForeignKey(User, on_delete=models.CASCADE, related_name="schedules")
-
+    created_at = models.DateTimeField(default=datetime.now, editable=False)
+    updated_at = models.DateTimeField(auto_now_add=True, blank=True)
     def clean(self) -> None:
         if self.date_settled == True and self.shoot_date is None:
             raise ValidationError('shoot_date is required')

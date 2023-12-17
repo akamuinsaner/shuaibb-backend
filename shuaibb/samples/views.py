@@ -1,4 +1,3 @@
-from lib2to3.pgen2.parse import ParseError
 from .models import (
     Sample,
     SampleLabel,
@@ -21,8 +20,6 @@ from rest_framework.status import (
     HTTP_200_OK
 )
 from rest_framework.exceptions import (
-    ParseError,
-    NotFound,
     ValidationError
 )
 
@@ -63,7 +60,7 @@ class SampleCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=HTTP_201_CREATED)
         else:
-            raise ParseError(detail="参数错误")
+            raise ValidationError(serializer.error_messages)
 
 sample_create_view = SampleCreateView.as_view()
 
@@ -74,16 +71,12 @@ class SampleUpdateView(APIView):
         data = request.data
         sample_id = data.get('id')
         sample = Sample.objects.get(pk=sample_id)
-        if (sample is not None):
-            serializer = SampleSerializer(data=data, instance=sample)
-            if (serializer.is_valid()):
-                serializer.save()
-                return Response(serializer.data, status=HTTP_200_OK)
-            else:
-                print(serializer.errors, serializer.error_messages)
-                raise ParseError('参数错误')
+        serializer = SampleSerializer(data=data, instance=sample)
+        if (serializer.is_valid()):
+            serializer.save()
+            return Response(serializer.data, status=HTTP_200_OK)
         else:
-            raise NotFound()
+            raise ValidationError(serializer.error_messages)
 
 sample_update_view = SampleUpdateView.as_view()
 

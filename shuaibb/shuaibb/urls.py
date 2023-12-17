@@ -30,6 +30,7 @@ urlpatterns += [
     path(
         'api/',
         include([
+            path('auths/', include("auths.urls")),
             path('users/', include("users.urls")),
             path('samples/', include("samples.urls")),
             path('pictures/', include("pictures.urls")),
