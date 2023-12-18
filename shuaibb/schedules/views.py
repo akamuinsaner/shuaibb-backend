@@ -9,6 +9,7 @@ from django.db import transaction
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK
+from users.models import User
 
 # Create your views here.
 class ScheduleListView(ListCreateAPIView):
@@ -63,7 +64,11 @@ class ScheduleListView(ListCreateAPIView):
             data["end_time"] = request.data.get('end_time')
         schedule_serializer = ScheduleSerializer(data=data)
         if (schedule_serializer.is_valid()):
-            schedule_serializer.save()
+            instance = schedule_serializer.save()
+            executor_ids = request.data.get('executor_ids')
+            if (executor_ids is not None):
+                executors = User.objects.filter(id__in=executor_ids)
+                instance.executors.set(executors)
             return Response(schedule_serializer.data, status=HTTP_201_CREATED)
         else:
             raise ValidationError(schedule_serializer.errors)

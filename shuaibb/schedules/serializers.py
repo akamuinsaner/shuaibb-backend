@@ -11,6 +11,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(required=True)
     customer = CustomerSerializer(many=False, read_only=True)
     customer_id = serializers.IntegerField(required=True)
+    executors=UserSerializer(read_only=True, many=True)
     class Meta:
         model = Schedule
         fields = '__all__'

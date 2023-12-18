@@ -161,6 +161,7 @@ INSTALLED_APPS += [
     'rest_framework.authtoken',
     "corsheaders",
     'shuaibb.app.ShuaibbConfig',
+    'simple_history',
     'users',
     'samples',
     'upload',
@@ -173,6 +174,7 @@ INSTALLED_APPS += [
 MIDDLEWARE += [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 

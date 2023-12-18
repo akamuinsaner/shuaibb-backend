@@ -10,3 +10,4 @@ cos-python-sdk-v5
 djangorestframework-recursive
 python-dotenv
 Pillow
+django-simple-history
