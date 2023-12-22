@@ -35,8 +35,8 @@ class FileUploadCosView(APIView):
     
     def post(self, request):
         file = request.data["file"]
-        type = request.data["type"]
-        type = request.data["type"] if request.data["type"] != None else 'common'
+        type = request.data.get("type")
+        type = type if type != None else 'common'
         name, ext = os.path.splitext(file.name)
         name = "{type}/{id}{ext}".format(id=str(uuid.uuid4()), ext=ext, type=type)
         prefix='https://{Bucket}.cos.{Region}.myqcloud.com/'.format(

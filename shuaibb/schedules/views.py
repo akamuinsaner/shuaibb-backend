@@ -1,9 +1,10 @@
+from datetime import date, datetime
 from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, CreateAPIView
 from .models import Schedule
 from customers.models import Customer
 from customers.serializers import CustomerSerializer
-from .serializers import ScheduleSerializer
+from .serializers import ScheduleSerializer, ScheduleHistorySerializer
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
@@ -56,7 +57,8 @@ class ScheduleListView(ListCreateAPIView):
             "pay_status": request.data.get("pay_status"),
             "location": request.data.get("location"),
             'user_id': request.user.id,
-            "date_settled": date_settled
+            "date_settled": date_settled,
+            "_change_reason": request.data.get("_change_reason"),
         }
         if (date_settled is True):
             data["shoot_date"] = request.data.get('shoot_date')
@@ -71,8 +73,84 @@ class ScheduleListView(ListCreateAPIView):
                 instance.executors.set(executors)
             return Response(schedule_serializer.data, status=HTTP_201_CREATED)
         else:
+            print(schedule_serializer.errors)
             raise ValidationError(schedule_serializer.errors)
             
 schedule_list_view = ScheduleListView.as_view()
+
+class ScheduleDetailView(RetrieveUpdateDestroyAPIView):
+    permission_classes=[IsAuthenticated]
+    serializer_class=ScheduleSerializer
+
+    def get_object(self):
+        return Schedule.objects.get(pk=self.kwargs["id"])
+
+    def perform_update(self, serializer):
+        instance = Schedule.objects.get(pk=self.kwargs["id"])
+        serializer.save()
+        executor_ids = self.request.data.get('executor_ids')
+        if (executor_ids is not None):
+            executors = User.objects.filter(id__in=executor_ids)
+            instance.executors.set(executors)
+        return Response(serializer.data, status=HTTP_201_CREATED)
+
+
+schedule_detail_view = ScheduleDetailView.as_view()
+
+class ScheduleHistoryView(ListAPIView):
+    permission_classes=[IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        id = self.kwargs.get('id')
+        schedule = Schedule.objects.get(pk=id)
+        history = ScheduleHistorySerializer(schedule.history.all().order_by('history_date'), many=True).data
+        return Response(history, status=HTTP_200_OK)
+
+schedule_history_view = ScheduleHistoryView.as_view()
+
+class ScheduleSearchView(CreateAPIView):
+    permission_classes=[IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        list = Schedule.objects.filter(user=request.user)
+        customer_ids = request.data.get('customer_ids')
+        if customer_ids != None and len(customer_ids) > 0:
+            list = list.filter(customer__in=customer_ids)
+        sample_ids = request.data.get('sample_ids')
+        if sample_ids != None and len(sample_ids) > 0:
+            list = list.filter(sample__in=sample_ids)
+        pay_status = request.data.get('pay_status')
+        if pay_status != None and len(pay_status) > 0:
+            list = list.filter(pay_status__in=pay_status)
+        executor_ids = request.data.get('executor_ids')
+        if executor_ids != None and len(executor_ids) > 0:
+            list = list.filter(executors__in=executor_ids).distinct()
+        start_date = request.data.get('start_date')
+        if start_date is not None:
+            list = list.filter(shoot_date__gte=start_date)
+        end_date = request.data.get('end_date')
+        if end_date is not None:
+            list = list.filter(shoot_date__lte=end_date)
+        order = request.data.get('order')
+        order_by = request.data.get('order_by')
+        if (order_by is not None):
+            order_by = "-{}".format(order_by) if order == 'desc' else order_by
+            list = list.order_by(order_by)
+        offset = request.data['offset']
+        limit = request.data['limit']
+        limitedData = list[offset * limit: (offset + 1) * limit]
+        total = list.count()
+
+        serializer = ScheduleSerializer(limitedData, many=True)
+        response = {
+            "data": serializer.data,
+            "total": total,
+            "offset": offset,
+            "limit": limit
+        }
+        return Response(response, status=HTTP_200_OK)
+
+schedule_search_view = ScheduleSearchView.as_view()
+
         
 
