@@ -11,3 +11,4 @@ djangorestframework-recursive
 python-dotenv
 Pillow
 django-simple-history
+drf-standardized-errors

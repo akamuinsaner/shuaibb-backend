@@ -1,15 +1,17 @@
-from urllib import response
-from rest_framework.views import exception_handler
+from drf_standardized_errors.formatter import ExceptionFormatter
+from drf_standardized_errors.types import ErrorResponse
 
-def custom_exception_handler(exc, context):
-    response = exception_handler(exc, context)
-    if (response is not None):
-        format = {}
-        format["code"] = response.status_code
-        if (response.data.get("detail") is None):
-            format["message"] = response.data
-        else:
-            format["message"] = response.data.get("detail")
-        response.data = format
 
-    return response
+class MyExceptionFormatter(ExceptionFormatter):
+   def format_error_response(self, error_response: ErrorResponse):
+       error = error_response.errors[0]
+       if error_response.type == "validation_error" and error.attr != "non_field_errors" and error.attr is not None:
+           error_message = f"{error.attr}: {error.detail}"
+       else:
+           error_message = error.detail
+       return {
+           "success": False,
+           "type": error_response.type,
+           "code": error.code,
+           "error": error_message
+       }

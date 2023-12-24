@@ -19,6 +19,8 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_200_OK
 )
+from users.models import User;
+from users.serializers import UserSerializer;
 from rest_framework.exceptions import (
     ValidationError
 )
@@ -55,9 +57,12 @@ class SampleCreateView(APIView):
 
     def post(self, request):
         data = request.data
+        tag_ids = self.request.data.get('tag_ids', [])
+        tags = SampleLabel.objects.filter(id__in=tag_ids)
         serializer = SampleSerializer(data=data)
         if (serializer.is_valid()):
-            serializer.save()
+            instance = serializer.save()
+            instance.tags.set(tags)
             return Response(serializer.data, status=HTTP_201_CREATED)
         else:
             raise ValidationError(serializer.error_messages)
@@ -70,10 +75,13 @@ class SampleUpdateView(APIView):
     def post(self, request):
         data = request.data
         sample_id = data.get('id')
-        sample = Sample.objects.get(pk=sample_id)
-        serializer = SampleSerializer(data=data, instance=sample)
+        instance = Sample.objects.get(pk=sample_id)
+        tag_ids = self.request.data.get('tag_ids', [])
+        tags = SampleLabel.objects.filter(id__in=tag_ids)
+        serializer = SampleSerializer(data=data, instance=instance)
         if (serializer.is_valid()):
             serializer.save()
+            instance.tags.set(tags)
             return Response(serializer.data, status=HTTP_200_OK)
         else:
             raise ValidationError(serializer.error_messages)

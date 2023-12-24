@@ -29,24 +29,3 @@ class SampleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-    def create(self, validated_data):
-        tags = validated_data.pop('tags', [])
-        for tag in self.initial_data.get('tags'):
-            tags.append(SampleLabel.objects.get(pk=tag.get('id')))
-        sample = Sample.objects.create(**validated_data)
-        user = User.objects.get(pk=self.initial_data.get('user_id'))
-        sample.tags.set(tags)
-        sample.user = user
-        return sample
-
-    def update(self, instance, validated_data):
-        tags = validated_data.pop('tags', [])
-        for tag in self.initial_data.get('tags'):
-            tags.append(SampleLabel.objects.get(pk=tag.get('id')))
-        instance.tags.set(tags)
-        for (key, value) in validated_data.items():
-            setattr(instance, key, value)
-        instance.save()
-        return instance
-
-

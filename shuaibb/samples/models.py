@@ -52,12 +52,12 @@ class Sample(models.Model):
 
     # price fields
     price = models.FloatField(null=False)
-    price_visible = models.BooleanField(null=False, blank=False)
+    price_visible = models.BooleanField(null=True, blank=True, default=True)
     deposit = models.FloatField(null=False)
-    deposit_visible = models.BooleanField(null=False, blank=False)
+    deposit_visible = models.BooleanField(null=True, blank=True, default=True)
 
     # service fields
-    basic_info_visible = models.BooleanField(null=False, blank=False)
+    basic_info_visible = models.BooleanField(null=True, blank=True, default=True)
     costume_offer = models.BooleanField(null=False, blank=False)
     costume_count = models.IntegerField(null=True, blank=True)
     negative_film_count = models.IntegerField(null=False, blank=False)
@@ -66,12 +66,12 @@ class Sample(models.Model):
     refine_count = models.IntegerField(null=False, blank=False)
     shooting_indoor = models.BooleanField(null=False, blank=False)
     shooting_scene_indoor_count = models.IntegerField(null=True, blank=True)
-    custom_detail = models.TextField(null=False, blank=False)
+    custom_detail = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(default=datetime.now, editable=False)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
     # extra fields
-    public = models.BooleanField(null=False, blank=False)
-    tips = models.TextField(null=False, blank=False)
+    public = models.BooleanField(null=True, blank=True, default=True)
+    tips = models.TextField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name

@@ -141,7 +141,12 @@ AUTH_USER_MODEL = 'users.User'
 
 ATOMIC_REQUESTS =True
 
+DRF_STANDARDIZED_ERRORS = {
+    "EXCEPTION_FORMATTER_CLASS": "shuaibb.exceptions.MyExceptionFormatter"
+}
+
 REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
     # authentication
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -152,11 +157,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    # exception
-    'EXCEPTION_HANDLER': 'shuaibb.exceptions.custom_exception_handler'
 }
 
 INSTALLED_APPS += [
+    "drf_standardized_errors",
     "rest_framework",
     'rest_framework.authtoken',
     "corsheaders",
@@ -228,5 +232,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'users.backends.EmailAndMobileBackend',
 )
+
+
 
 
