@@ -12,7 +12,7 @@ class LanguageView(APIView):
     permission_classes = []
     def get(self, request):
         f = Path(__file__).resolve().parent / 'resources/i18n.json'
-        content = f.read_text()
+        content = f.read_text(encoding="utf-8")
         return Response(json.loads(content), status=HTTP_200_OK)
 
 language_view = LanguageView.as_view()

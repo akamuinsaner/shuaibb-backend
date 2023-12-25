@@ -1,6 +1,34 @@
 {
-    "aaa": {
-        "en": "11111111111111",
-        "ch": "22222222222222"
+    "home": {
+        "en": "Home",
+        "ch": "首页"  
+    },
+    "sample manage": {
+        "en": "Samples",
+        "ch": "样片管理"
+    },
+    "new sample": {
+        "en": "Create",
+        "ch": "新建样片"
+    },
+    "sample center": {
+        "en": "Center",
+        "ch": "样片中心"
+    },
+    "photo space": {
+        "en": "Photos",
+        "ch": "图片空间"
+    },
+    "create sample": {
+        "en": "Create",
+        "ch": "新建样片"
+    },
+    "appointment manage": {
+        "en": "Appointments",
+        "ch": "预约管理"
+    },
+    "perms manage": {
+        "en": "Permissions",
+        "ch": "权限管理"
     }
 }

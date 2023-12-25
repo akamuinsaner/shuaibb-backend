@@ -13,5 +13,5 @@ class MyExceptionFormatter(ExceptionFormatter):
            "success": False,
            "type": error_response.type,
            "code": error.code,
-           "error": error_message
+           "message": error_message
        }
