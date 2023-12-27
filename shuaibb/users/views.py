@@ -1,5 +1,7 @@
 from gettext import install
 import secrets
+from unicodedata import name
+from urllib import response
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import Group
@@ -13,6 +15,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import  ParseError, ValidationError
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django.db.models import Q
+import json
+from utils.funcTools import upload_to_cos, delete_from_cos, prefix
 
 class SignUpView(APIView):
     def post(self, request):
@@ -117,6 +121,68 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
         instance.delete()
 
 user_detail_view = UserDetailView.as_view()
+
+class AddCoverView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        file = request.data['file']
+        user = request.user
+        covers = user.covers
+        try:
+            covers = json.loads(covers)
+        except:
+            covers = []
+        if '{prefix}/cover/{name}'.format(prefix=prefix, name=file.name) in covers:
+            raise ValidationError('封面已经存在，请更换名称后上传')
+        url = upload_to_cos(file, '/cover/{name}'.format(name=file.name))
+        covers.append(url)
+        user.covers = json.dumps(covers)
+        user.save()
+        return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+
+add_cover_view = AddCoverView.as_view()
+
+class RemoveCoverView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        cover = request.data['cover']
+        user = request.user
+        covers = user.covers
+        try:
+            covers = json.loads(covers)
+        except:
+            covers = []
+        covers.remove(cover)
+        delete_from_cos(cover.replace(prefix, ''))
+        user.covers = json.dumps(covers)
+        user.save()
+        return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+        
+remove_cover_view = RemoveCoverView.as_view()
+
+class ReplaceCoverView(APIView):
+    permission_classes=[IsAuthenticated]
+    def post(self, request):
+        user = request.user
+        covers = user.covers
+        old = request.data['old']
+        file = request.data['file']
+
+        try:
+            covers = json.loads(covers)
+        except:
+            covers = []
+        if '{prefix}/cover/{name}'.format(prefix=prefix, name=file.name) in covers:
+            raise ValidationError('封面已经存在，请更换名称后上传')
+        new = upload_to_cos(file, '/cover/{name}'.format(name=file.name))
+        covers = [new if old == c else c for c in covers]
+        delete_from_cos(old.replace(prefix, ''))
+        user.covers = json.dumps(covers)
+        user.save()
+        return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+
+replace_cover_view = ReplaceCoverView.as_view()
+
 
 
 

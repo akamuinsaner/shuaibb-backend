@@ -39,12 +39,7 @@ class FileUploadCosView(APIView):
         type = type if type != None else 'common'
         name, ext = os.path.splitext(file.name)
         name = "{type}/{id}{ext}".format(id=str(uuid.uuid4()), ext=ext, type=type)
-        prefix='https://{Bucket}.cos.{Region}.myqcloud.com/'.format(
-            Bucket=ENV_CONFIG.get('Bucket'),
-            Region=ENV_CONFIG.get('Region'),
-        )
-        upload_to_cos(file, name)
-        print(prefix, name)
-        response = {}
-        response["url"] = '{prefix}{name}'.format(prefix=prefix, name=name)
-        return Response(response, status=status.HTTP_201_CREATED)
+        url = upload_to_cos(file, name)
+        if (url is None):
+            raise Exception('上传失败')
+        return Response({ 'url': url }, status=status.HTTP_201_CREATED)

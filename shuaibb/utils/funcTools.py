@@ -4,6 +4,11 @@ from qcloud_cos import CosConfig
 from dotenv import dotenv_values
 from qcloud_cos import CosS3Client
 
+prefix='https://{Bucket}.cos.{Region}.myqcloud.com/'.format(
+    Bucket=ENV_CONFIG.get('Bucket'),
+    Region=ENV_CONFIG.get('Region'),
+)
+
 def upload_to_cos(file, file_path):
     cos_config = CosConfig(
         Region=ENV_CONFIG["Region"],
@@ -18,7 +23,7 @@ def upload_to_cos(file, file_path):
         Body=file,
         Key=file_path,
     )
-    return response if response is not None else None
+    return "{prefix}{name}".format(prefix=prefix, name=file_path) if response is not None else None
 
 def delete_from_cos(file_path):
     cos_config = CosConfig(
