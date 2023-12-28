@@ -19,14 +19,115 @@
         "en": "Photos",
         "ch": "图片空间"
     },
-    "sample label": {
-        "en": "Labels",
-        "ch": "样片标签"
+    "sample name": {
+        "en": "Name",
+        "ch": "样片名称"
+    },
+    "sample price": {
+        "en": "Price",
+        "ch": "样片价格"
+    },
+    "sample service": {
+        "en": "Service",
+        "ch": "服务内容"
+    },
+    "sample others": {
+        "en": "Others",
+        "ch": "其他内容"
+    },
+    "reset": {
+        "en": "Reset",
+        "ch": "重置"
+    },
+    "save draft": {
+        "en": "Save Draft",
+        "ch": "保存为草稿"
+    },
+    "edit draft": {
+        "en": "Edit Draft",
+        "ch": "修改草稿"
+    },
+    "save sample": {
+        "en": "Save",
+        "ch": "提交样片"
+    },
+    "edit sample": {
+        "en": "Edit",
+        "ch": "更新样片"
     },
     "create sample": {
         "en": "Create",
         "ch": "新建样片"
     },
+    "sample labels": {
+        "en": "Labels",
+        "ch": "样片标签"
+    },
+    "please input": {
+        "en": "Please Input ",
+        "ch": "请输入"
+    },
+    "please select": {
+        "en": "Please Select ",
+        "ch": "请选择"
+    },
+    "characters limited in 20": {
+        "en": "Characters Limited In 20",
+        "ch": "20字以内的字符"
+    },
+    "sample description": {
+        "en": "Sample Description",
+        "ch": "样片描述"
+    },
+    "introduce to others": {
+        "en": "Introduce To Others",
+        "ch": "请为大家介绍一下样片吧"
+    },
+    "upload": {
+        "en": "Upload",
+        "ch": "上传图片"
+    },
+    "sort": {
+        "en": "Sort",
+        "ch": "排序"
+    },
+    "sample sovers": {
+        "en": "Sample Covers",
+        "ch": "样片封面图"
+    },
+    "sample sovers tips": {
+        "en": "will be showed in XXXX, no larger than 3mb,size of 3:4 and no more than 4",
+        "ch": "封面图将显示在xxxx，图片大小不能超过3MB，尺寸使用3:4，最多上传4张"
+    },
+    "sample details": {
+        "en": "Sample Details",
+        "ch": "样片详情图"
+    },
+    "upload success": {
+        "en": "Upload Successfully",
+        "ch": "上传成功"
+    },
+    "tip": {
+        "en": "Tip",
+        "ch": "备注"
+    },
+    "no more than 80": {
+        "en": "mo more than 80",
+        "ch": "套系详情图，最多不超过80张<"
+    },
+    "sort by dragging": {
+        "en": "Sort By Dragging",
+        "ch": "拖动排序"
+    },
+    "cancel": {
+        "en": "Cancel",
+        "ch": "取消"
+    },
+    "confirm": {
+        "en": "Confirm",
+        "ch": "确定"
+    },
+
     "appointment manage": {
         "en": "Appointments",
         "ch": "预约管理"
