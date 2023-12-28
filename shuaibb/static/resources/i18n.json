@@ -19,6 +19,10 @@
         "en": "Photos",
         "ch": "图片空间"
     },
+    "sample label": {
+        "en": "Labels",
+        "ch": "样片标签"
+    },
     "create sample": {
         "en": "Create",
         "ch": "新建样片"

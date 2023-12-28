@@ -7,19 +7,19 @@ from rest_framework.exceptions import ValidationError
 
 class SampleLabel(models.Model):
     name = models.CharField(unique=True, null=False, max_length=10)
-
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='children', on_delete=models.CASCADE)
     def __str__(self) -> str:
         return self.name
 
 class SampleTemplate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sample_templates")
     name = models.CharField(null=False, max_length=20)
-    basic_info_visible = models.BooleanField(null=False, blank=False)
+    basic_info_visible = models.BooleanField(null=True, blank=True, default=True)
     costume_offer = models.BooleanField(null=False, blank=False)
-    costume_count = models.IntegerField(default=None)
+    costume_count = models.IntegerField(null=True, blank=True)
     negative_film_count = models.IntegerField(null=False, blank=False)
     nega_film_all_offer = models.BooleanField(null=False, blank=False)
-    shooting_time = models.IntegerField(null=False, blank=False)
+    shooting_time = models.FloatField(null=False, blank=False)
     refine_count = models.IntegerField(null=False, blank=False)
     shooting_indoor = models.BooleanField(null=False, blank=False)
     shooting_scene_indoor_count = models.IntegerField(null=True, blank=True)
@@ -45,7 +45,7 @@ class Sample(models.Model):
 
     # name fields
     name = models.CharField(null=False, max_length=30)
-    desc = models.TextField(null=False, max_length=500)
+    desc = models.TextField(null=True, blank=True, max_length=500)
     tags = models.ManyToManyField(SampleLabel)
     covers = models.TextField(max_length=1000000)
     details = models.TextField(max_length=1000000)
@@ -62,7 +62,7 @@ class Sample(models.Model):
     costume_count = models.IntegerField(null=True, blank=True)
     negative_film_count = models.IntegerField(null=False, blank=False)
     nega_film_all_offer = models.BooleanField(null=False, blank=False)
-    shooting_time = models.IntegerField(null=False, blank=False)
+    shooting_time = models.FloatField(null=False, blank=False)
     refine_count = models.IntegerField(null=False, blank=False)
     shooting_indoor = models.BooleanField(null=False, blank=False)
     shooting_scene_indoor_count = models.IntegerField(null=True, blank=True)
@@ -72,6 +72,7 @@ class Sample(models.Model):
     # extra fields
     public = models.BooleanField(null=True, blank=True, default=True)
     tips = models.TextField(null=True, blank=True)
+
 
     def __str__(self) -> str:
         return self.name

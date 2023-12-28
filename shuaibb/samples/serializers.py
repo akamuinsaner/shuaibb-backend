@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from users.serializers import UserSerializer
+from rest_framework_recursive.fields import RecursiveField
 from users.models import User
 from .models import (
     Sample,
@@ -9,6 +10,8 @@ from .models import (
 
 
 class SampleLabelSerializer(serializers.ModelSerializer):
+    parent_id = serializers.IntegerField(required=False, allow_null=True)
+    children = RecursiveField(many=True, required=False)
     class Meta:
         model = SampleLabel
         fields= '__all__'

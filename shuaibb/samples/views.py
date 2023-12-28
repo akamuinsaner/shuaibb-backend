@@ -42,15 +42,6 @@ class SampleDraftRetriveView(APIView):
 
 sample_draft_retrive_view = SampleDraftRetriveView.as_view()
 
-class SampleDetailView(RetrieveUpdateDestroyAPIView):
-    permission_classes=[IsAuthenticated]
-    serializer_class=SampleSerializer
-
-    def get_object(self):
-        return Sample.objects.get(pk=self.kwargs['id'])
-
-sample_detail_view = SampleDetailView.as_view()
-
 
 class SampleCreateView(APIView):
     permission_classes=[IsAuthenticated]
@@ -69,24 +60,23 @@ class SampleCreateView(APIView):
 
 sample_create_view = SampleCreateView.as_view()
 
-class SampleUpdateView(APIView):
+class SampleDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes=[IsAuthenticated]
+    serializer_class=SampleSerializer
 
-    def post(self, request):
-        data = request.data
-        sample_id = data.get('id')
-        instance = Sample.objects.get(pk=sample_id)
+    def get_object(self):
+        return Sample.objects.get(pk=self.kwargs['id'])
+
+    def perform_update(self, serializer):
+        instance = Sample.objects.get(pk=self.kwargs['id'])
+        serializer.save()
         tag_ids = self.request.data.get('tag_ids', [])
         tags = SampleLabel.objects.filter(id__in=tag_ids)
-        serializer = SampleSerializer(data=data, instance=instance)
-        if (serializer.is_valid()):
-            serializer.save()
-            instance.tags.set(tags)
-            return Response(serializer.data, status=HTTP_200_OK)
-        else:
-            raise ValidationError(serializer.error_messages)
+        instance.tags.set(tags)
+        return Response(serializer.data, status=HTTP_200_OK)
+        
 
-sample_update_view = SampleUpdateView.as_view()
+sample_detail_view = SampleDetailView.as_view()
 
 
 class SampleListView(APIView):
@@ -178,7 +168,52 @@ class SampleLabelList(ListCreateAPIView):
     serializer_class = SampleLabelSerializer
     permission_classes=[IsAuthenticated]
 
+
 sample_label_list_view = SampleLabelList.as_view()
+
+class SampleLabelDetail(RetrieveUpdateDestroyAPIView):
+    serializer_class = SampleLabelSerializer
+    permission_classes=[IsAuthenticated]
+
+    def get_object(self):
+        return SampleLabel.objects.get(pk=self.kwargs['id'])
+
+    def perform_update(self, serializer):
+        parent_id = self.request.data['parent_id']
+        id = self.kwargs["id"]
+        parent = SampleLabel.objects.filter(id=parent_id).first()
+        while parent != None:
+            if parent.id == id:
+                raise ValidationError('请更换父级标签')
+            else:
+                parent = parent.parent
+        serializer.save()
+
+sample_label_detail_view = SampleLabelDetail.as_view()
+
+
+class SampleLabelSearch(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self, request):
+        name = request.data.get('name')
+        list = SampleLabel.objects.all()
+        if (name != None):
+            list = list.filter(name__contains=name)
+        offset = request.data["offset"]
+        limit = request.data["limit"]
+        list = list[offset * limit: (offset + 1) * limit]
+        total = list.count()
+        serializer = SampleLabelSerializer(list, many=True)
+        response = {
+            "data": serializer.data,
+            "total": total,
+            "offset": offset,
+            "limit": limit
+        }
+        return Response(response, status=HTTP_200_OK)
+
+sample_label_search_view = SampleLabelSearch.as_view()
 
 ############ label end ###########
 
