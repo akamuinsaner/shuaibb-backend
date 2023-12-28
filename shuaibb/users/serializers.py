@@ -13,6 +13,8 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.ModelSerializer):
     mobile = serializers.CharField(required=False)
     email = serializers.CharField(required=False)
+    groups = GroupSerializer(read_only=True, required=False, many=True)
+    user_permissions = PermissionSerializer(read_only=True, required=False)
     class Meta:
         model = User
         fields = '__all__'
