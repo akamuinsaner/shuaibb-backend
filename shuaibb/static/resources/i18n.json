@@ -127,6 +127,187 @@
         "en": "Confirm",
         "ch": "确定"
     },
+    "price": {
+        "en": "Price",
+        "ch": "价格"
+    },
+    "deposit": {
+        "en": "Deposit",
+        "ch": "定金"
+    },
+    "standard number": {
+        "en": "Standard Number",
+        "ch": "标准格式的数字"
+    },
+    "sample price tip": {
+        "en": "The regular price value ranges from 1.00-500000.00 yuan. Please standardize the pricing behavior.",
+        "ch": "常规价格值范围在1.00-500000.00元之间，请规范标价行为"
+    },
+    "basic services": {
+        "en": "Basic Services",
+        "ch": "基础服务内容"
+    },
+    "show basic services": {
+        "en": "Visible",
+        "ch": "显示信息"
+    },
+    "hide basic services": {
+        "en": "Invisible",
+        "ch": "暂不显示"
+    },
+    "costume": {
+        "en": "Costume",
+        "ch": "服装造型"
+    },
+    "provide": {
+        "en": "Provide",
+        "ch": "提供"
+    },
+    "not provide": {
+        "en": "Not Provide",
+        "ch": "提供"
+    },
+    "costume count": {
+        "en": "Costume Count",
+        "ch": "服装套数"
+    },
+    "custom costume count": {
+        "en": "Custom Costume Count",
+        "ch": "自定义套数"
+    },
+    "negative film count": {
+        "en": "Negative Film Count",
+        "ch": "底片数量"
+    },
+    "negative film all sent": {
+        "en": "Negative Film All Sent",
+        "ch": "底片全送"
+    },
+    "yes": {
+        "en": "Yes",
+        "ch": "是"
+    },
+    "no": {
+        "en": "No",
+        "ch": "否"
+    },
+    "shooting time": {
+        "en": "Shooting Time",
+        "ch": "拍摄时长"
+    },
+    "0.5h": {
+        "en": "0.5h",
+        "ch": "半小时"
+    },
+    "1h": {
+        "en": "1h",
+        "ch": "1小时"
+    },
+    "2h": {
+        "en": "2h",
+        "ch": "2小时"
+    },
+    "4h": {
+        "en": "4h",
+        "ch": "4小时"
+    },
+    "8h": {
+        "en": "8h",
+        "ch": "8小时"
+    },
+    "custom": {
+        "en": "Custom",
+        "ch": "自定义"
+    },
+    "refine count": {
+        "en": "Refine Count",
+        "ch": "精修数量"
+    },
+    "shooting scene": {
+        "en": "Shooting Scene",
+        "ch": "拍摄场景"
+    },
+    "shooting indoor": {
+        "en": "Indoor",
+        "ch": "内景"
+    },
+    "shooting outdoor": {
+        "en": "Outdoor",
+        "ch": "外景"
+    },
+    "indoor count": {
+        "en": "Indoor Count",
+        "ch": "内景数量"
+    },
+    "custom detail": {
+        "en": "Custom Detail",
+        "ch": "自定义服务详情"
+    },
+    "custom detail tip": {
+        "en": "[Filming Service] &#10;Can be filmed twice&#10;providing professional clothing for free (can be customized) and a set of clothing is provided as a gift. &#10;[Intimate Service] &#10;1: Professional photographer one-on-one service &#10;2: Full-time photographer, guide follows the whole process &#10;3: Free to enjoy the front studio shooting or outdoor shooting, can be customized for shooting at home &#10;[Noble Enjoyment] 40 pieces of fine-tuned photos, 10-inch album, 24 pieces of negatives (12p fine-tuned fashion design)&#10;",
+        "cn": "【拍摄服务】&#10;可拍摄两次&#10;提供专业服装店内任选（可定制）并赠送服装一套&#10;【贴心服务】&#10;1：专业摄影师一对一服务&#10;2：全程摄影师，引导师全程跟拍&#10;3：免费享受首页影棚拍摄或者外景拍摄，可上门定制拍摄&#10;【尊贵享受】&#10;40张精修片，方10寸相册一本，入册24张底片（12p精修时尚设计）&#10;"
+    },
+    "public": {
+        "en": "Public",
+        "ch": "对外公开"
+    },
+    "save new template": {
+        "en": "Save",
+        "ch": "存为新模板"
+    },
+    "first here": {
+        "en": "First Here?",
+        "ch": "第一次查看新模板时"
+    },
+    "please": {
+        "en": "Please",
+        "ch": "请"
+    },
+    "learn more": {
+        "en": "Learn More",
+        "ch": "了解更多"
+    },
+    "click here": {
+        "en": "Click Here",
+        "ch": "点击这里"
+    },
+    "create template": {
+        "en": "Create",
+        "ch": "新建模板"
+    },
+    "update template": {
+        "en": "Update",
+        "ch": "更新模板"
+    },
+    "please select one first": {
+        "en": "Please Select One First",
+        "ch": "请先选择一个模板"
+    },
+    "delete success": {
+        "en": "success",
+        "ch": "删除成功"
+    },
+    "update success": {
+        "en": "success",
+        "ch": "更新成功"
+    },
+    "create success": {
+        "en": "success",
+        "ch": "新建成功"
+    },
+    "operation cannot be revoked": {
+        "en": "Operation cannot be revoked, continue?",
+        "ch": "操作不可恢复，确认继续？"
+    },
+    "delete": {
+        "en": "Delete",
+        "ch": "删除"
+    },
+    "template name": {
+        "en": "Template Name",
+        "ch": "模板名称"
+    },
+
 
     "appointment manage": {
         "en": "Appointments",
