@@ -11,8 +11,8 @@ WORKDIR ${WORKDIR}
 
 RUN pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple \
     && pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple \
-    && python ${MANAGEFILE} makemigrations \
-    && python ${MANAGEFILE} migrate
+    # && python ${MANAGEFILE} makemigrations \
+    # && python ${MANAGEFILE} migrate
 
 ENV ENV=${ENV}
 ENV PYTHONUNBUFFERED=1
