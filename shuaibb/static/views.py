@@ -17,5 +17,14 @@ class LanguageView(APIView):
 
 language_view = LanguageView.as_view()
 
+class AreaVew(APIView):
+    permission_classes = []
+    def get(self, request):
+        f = Path(__file__).resolve().parent / 'resources/areas.json'
+        content = f.read_text(encoding="utf-8")
+        return Response(json.loads(content), status=HTTP_200_OK)
+
+area_view = AreaVew.as_view()
+
 
 
