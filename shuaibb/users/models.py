@@ -30,7 +30,7 @@ class User(AbstractBaseUser):
     avatar = models.CharField(null=True)
     nickname = models.CharField(null=True, blank=True, max_length=20)
     signature = models.CharField(null=True, blank=True, max_length=50)
-    region = models.CharField(null=True, blank=True, max_length=20)
+    region = models.CharField(null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     introduction = models.TextField(null=True, blank=True)
 
