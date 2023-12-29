@@ -10,9 +10,8 @@ COPY . ${WORKDIR}
 WORKDIR ${WORKDIR}
 
 RUN pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple \
-    # && python ${MANAGEFILE} makemigrations \
-    # && python ${MANAGEFILE} migrate
+    && pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
 
 ENV ENV=${ENV}
 ENV PYTHONUNBUFFERED=1
